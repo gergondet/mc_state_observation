@@ -58,7 +58,8 @@ void AttitudeObserver::reset(const mc_control::MCController & ctl)
   xk_.setZero();
   if(initFromControl_)
   {
-    const Eigen::Matrix3d & cOri = ctl.robot(robot_).bodyPosW(imuSensor_).rotation();
+    const auto & imuSensor = ctl.robot(robot_).bodySensor(imuSensor_);
+    const Eigen::Matrix3d cOri = (imuSensor.X_b_s() * ctl.robot(robot_).bodyPosW(imuSensor.parentBody())).rotation();
     xk_.segment<3>(indexes::ori) = so::kine::rotationMatrixToRotationVector(cOri.transpose());
   }
 
@@ -210,7 +211,7 @@ void AttitudeObserver::KalmanFilterConfig::addToGUI(mc_rtc::gui::StateBuilder & 
 {
   using namespace mc_rtc::gui;
   // clang-format off
-  gui.addElement(category, 
+  gui.addElement(category,
     make_input_element("Compensate Mode", compensateMode),
     make_input_element("acceleroCovariance", acceleroCovariance),
     make_input_element("gyroCovariance", gyroCovariance),

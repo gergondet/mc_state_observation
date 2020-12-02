@@ -11,6 +11,7 @@ namespace mc_state_observation
 struct AttitudeObserver : public mc_observers::Observer
 {
   using indexes = stateObservation::kine::indexes<stateObservation::kine::rotationVector>;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
  public:
   AttitudeObserver(const std::string & type, double dt);
